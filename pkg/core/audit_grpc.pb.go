@@ -51,7 +51,7 @@ func (c *auditClient) Log(ctx context.Context, in *LogRequest, opts ...grpc.Call
 // for forward compatibility
 type AuditServer interface {
 	Log(context.Context, *LogRequest) (*Empty, error)
-	// mustEmbedUnimplementedAuditServer()
+	mustEmbedUnimplementedAuditServer()
 }
 
 // UnimplementedAuditServer must be embedded to have forward compatible implementations.
@@ -61,14 +61,14 @@ type UnimplementedAuditServer struct {
 func (UnimplementedAuditServer) Log(context.Context, *LogRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Log not implemented")
 }
-// func (UnimplementedAuditServer) mustEmbedUnimplementedAuditServer() {}
+func (UnimplementedAuditServer) mustEmbedUnimplementedAuditServer() {}
 
 // UnsafeAuditServer may be embedded to opt out of forward compatibility for this service.
 // Use of this interface is not recommended, as added methods to AuditServer will
 // result in compilation errors.
-// type UnsafeAuditServer interface {
-// 	mustEmbedUnimplementedAuditServer()
-// }
+type UnsafeAuditServer interface {
+	mustEmbedUnimplementedAuditServer()
+}
 
 func RegisterAuditServer(s grpc.ServiceRegistrar, srv AuditServer) {
 	s.RegisterService(&Audit_ServiceDesc, srv)

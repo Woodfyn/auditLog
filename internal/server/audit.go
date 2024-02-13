@@ -12,11 +12,13 @@ type AuditService interface {
 
 type AuditServer struct {
 	service AuditService
+	audit.UnimplementedAuditServer
 }
 
 func NewAuditServer(service AuditService) *AuditServer {
 	return &AuditServer{
-		service: service,
+		service:                  service,
+		UnimplementedAuditServer: audit.UnimplementedAuditServer{},
 	}
 }
 
