@@ -10,15 +10,15 @@ type Repository interface {
 	Insert(ctx context.Context, req audit.LogItem) error
 }
 
-type AuditRepo struct {
+type Audit struct {
 	repo Repository
 }
 
-func NewAuditRepo(repo Repository) *AuditRepo {
-	return &AuditRepo{repo: repo}
+func NewAuditRepo(repo Repository) *Audit {
+	return &Audit{repo: repo}
 }
 
-func (s *AuditRepo) Insert(ctx context.Context, req *audit.LogRequest) error {
+func (s *Audit) Insert(ctx context.Context, req *audit.LogRequest) error {
 	item := audit.LogItem{
 		Action:    req.GetAction().String(),
 		Entity:    req.GetEntity().String(),
