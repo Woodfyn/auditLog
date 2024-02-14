@@ -8,10 +8,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      - MONGO_URL=mongodb://db:27017
-      - MONGO_DB=your_database_name
-      - MONGO_COLLECTION=your_collection_name
 
   db:
     restart: always
@@ -21,10 +17,13 @@ services:
     ports:
       - 27017:27017
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 5s
       retries: 3
-
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: qwerty
+      
 volumes:
   mongodb_data:
