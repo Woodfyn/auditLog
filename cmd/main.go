@@ -28,8 +28,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Print(cfg)
-
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
