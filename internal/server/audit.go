@@ -3,11 +3,11 @@ package server
 import (
 	"context"
 
-	audit "github.com/Woodfyn/auditLog/pkg/core"
+	audit "github.com/Woodfyn/auditLog/pkg/proto"
 )
 
 type AuditService interface {
-	Insert(ctx context.Context, req *audit.LogRequest) error
+	Insert(ctx context.Context, req *audit.LogRequest) (*audit.Empty, error)
 }
 
 type AuditServer struct {
@@ -23,7 +23,7 @@ func NewAuditServer(service AuditService) *AuditServer {
 }
 
 func (s *AuditServer) Log(ctx context.Context, req *audit.LogRequest) (*audit.Empty, error) {
-	err := s.service.Insert(ctx, req)
+	empty, err := s.service.Insert(ctx, req)
 
-	return nil, err
+	return empty, err
 }
