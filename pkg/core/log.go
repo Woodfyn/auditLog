@@ -9,7 +9,7 @@ import (
 
 const (
 	ENTITY_USER = "USER"
-	ENTITY_GAME = "BOOK"
+	ENTITY_GAME = "GAME"
 
 	ACTION_CREATE   = "CREATE"
 	ACTION_UPDATE   = "UPDATE"
