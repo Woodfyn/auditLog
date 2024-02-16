@@ -1,8 +1,10 @@
-package audit
+package core
 
 import (
 	"errors"
 	"time"
+
+	audit "github.com/Woodfyn/auditLog/pkg/proto"
 )
 
 const (
@@ -19,19 +21,19 @@ const (
 )
 
 var (
-	entities = map[string]LogRequest_Entities{
-		ENTITY_USER: LogRequest_USER,
-		ENTITY_GAME: LogRequest_GAME,
+	entities = map[string]audit.LogRequest_Entities{
+		ENTITY_USER: audit.LogRequest_USER,
+		ENTITY_GAME: audit.LogRequest_GAME,
 	}
 
-	actions = map[string]LogRequest_Actions{
-		ACTION_CREATE:   LogRequest_CREATE,
-		ACTION_UPDATE:   LogRequest_UPDATE,
-		ACTION_GET:      LogRequest_GET,
-		ACTION_DELETE:   LogRequest_DELETE,
-		ACTION_REGISTER: LogRequest_REGISTER,
-		ACTION_LOGIN:    LogRequest_LOGIN,
-		ACTION_LOGOUT:   LogRequest_LOGOUT,
+	actions = map[string]audit.LogRequest_Actions{
+		ACTION_CREATE:   audit.LogRequest_CREATE,
+		ACTION_UPDATE:   audit.LogRequest_UPDATE,
+		ACTION_GET:      audit.LogRequest_GET,
+		ACTION_DELETE:   audit.LogRequest_DELETE,
+		ACTION_REGISTER: audit.LogRequest_REGISTER,
+		ACTION_LOGIN:    audit.LogRequest_LOGIN,
+		ACTION_LOGOUT:   audit.LogRequest_LOGOUT,
 	}
 )
 
@@ -42,7 +44,7 @@ type LogItem struct {
 	Timestamp time.Time `bson:"timestamp"`
 }
 
-func ToPbEntity(entity string) (LogRequest_Entities, error) {
+func ToPbEntity(entity string) (audit.LogRequest_Entities, error) {
 	val, ex := entities[entity]
 	if !ex {
 		return 0, errors.New("invalid entity")
@@ -51,7 +53,7 @@ func ToPbEntity(entity string) (LogRequest_Entities, error) {
 	return val, nil
 }
 
-func ToPbAction(action string) (LogRequest_Actions, error) {
+func ToPbAction(action string) (audit.LogRequest_Actions, error) {
 	val, ex := actions[action]
 	if !ex {
 		return 0, errors.New("invalid action")

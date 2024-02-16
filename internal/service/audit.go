@@ -3,11 +3,12 @@ package service
 import (
 	"context"
 
-	audit "github.com/Woodfyn/auditLog/pkg/core"
+	"github.com/Woodfyn/auditLog/pkg/core"
+	audit "github.com/Woodfyn/auditLog/pkg/proto"
 )
 
 type Repository interface {
-	Insert(ctx context.Context, req audit.LogItem) error
+	Insert(ctx context.Context, req core.LogItem) (*audit.Empty, error)
 }
 
 type Audit struct {
@@ -18,8 +19,8 @@ func NewAuditRepo(repo Repository) *Audit {
 	return &Audit{repo: repo}
 }
 
-func (s *Audit) Insert(ctx context.Context, req *audit.LogRequest) error {
-	item := audit.LogItem{
+func (s *Audit) Insert(ctx context.Context, req *audit.LogRequest) (*audit.Empty, error) {
+	item := core.LogItem{
 		Action:    req.GetAction().String(),
 		Entity:    req.GetEntity().String(),
 		EntityID:  req.GetEntityId(),
