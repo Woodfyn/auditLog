@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/Woodfyn/auditLog/pkg/core"
-	audit "github.com/Woodfyn/auditLog/pkg/proto"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -18,8 +17,8 @@ func NewAuditMongo(db *mongo.Database) *AuditMongo {
 	}
 }
 
-func (s *AuditMongo) Insert(ctx context.Context, item core.LogItem) (*audit.Empty, error) {
-	_, err := s.db.Collection("audit").InsertOne(ctx, item)
+func (s *AuditMongo) Insert(ctx context.Context, msg *core.LogItem) error {
+	_, err := s.db.Collection("audit").InsertOne(ctx, msg)
 
-	return &audit.Empty{}, err
+	return err
 }

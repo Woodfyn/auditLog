@@ -3,7 +3,7 @@ package config
 import "github.com/spf13/viper"
 
 type Config struct {
-	Server   Server
+	MQ       Rabbit
 	Database Mongo
 }
 
@@ -13,9 +13,11 @@ type Mongo struct {
 	Password string `mapstructure:"DB_PASSWORD"`
 	Database string `mapstructure:"DB_DATABASE"`
 }
-
-type Server struct {
-	Port int
+type Rabbit struct {
+	Username string `mapstructure:"RABBIT_USERNAME"`
+	Password string `mapstructure:"RABBIT_PASSWORD"`
+	Host     string `mapstructure:"RABBIT_HOST"`
+	Port     int    `mapstructure:"RABBIT_PORT"`
 }
 
 func NewConfig(folder, filename, envname string) (*Config, error) {
@@ -39,6 +41,10 @@ func NewConfig(folder, filename, envname string) (*Config, error) {
 	}
 
 	if err := v.Unmarshal(&cfg.Database); err != nil {
+		return nil, err
+	}
+
+	if err := v.Unmarshal(&cfg.MQ); err != nil {
 		return nil, err
 	}
 

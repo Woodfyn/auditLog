@@ -3,27 +3,25 @@ package server
 import (
 	"context"
 
-	audit "github.com/Woodfyn/auditLog/pkg/proto"
+	"github.com/Woodfyn/auditLog/pkg/core"
 )
 
 type AuditService interface {
-	Insert(ctx context.Context, req *audit.LogRequest) (*audit.Empty, error)
+	Insert(ctx context.Context, msg *core.LogItem) error
 }
 
 type AuditServer struct {
 	service AuditService
-	audit.UnimplementedAuditServer
 }
 
 func NewAuditServer(service AuditService) *AuditServer {
 	return &AuditServer{
-		service:                  service,
-		UnimplementedAuditServer: audit.UnimplementedAuditServer{},
+		service: service,
 	}
 }
 
-func (s *AuditServer) Log(ctx context.Context, req *audit.LogRequest) (*audit.Empty, error) {
-	empty, err := s.service.Insert(ctx, req)
+func (s *AuditServer) Insert(ctx context.Context, msg *core.LogItem) error {
+	err := s.service.Insert(ctx, msg)
 
-	return empty, err
+	return err
 }
