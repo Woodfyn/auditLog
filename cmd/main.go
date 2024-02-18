@@ -24,11 +24,12 @@ const (
 
 func main() {
 	cfg, err := config.NewConfig(CONF_FOLDER, CONF_FILENAME, CONF_ENVNAME)
+	log.Print(cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	opts := options.Client()
@@ -53,13 +54,19 @@ func main() {
 	auditRepo := repository.NewAuditMongo(db)
 	auditService := service.NewAuditRepo(auditRepo)
 	auditSrv := server.NewAuditServer(auditService)
-	srv := server.New(auditSrv)
+	srv := server.NewServer(auditSrv)
 
-	log.Println("SERVER STARTED", time.Now())
-
-	if err := srv.ListenAndServe(cfg.Server.Port); err != nil {
+	if err := srv.Listen(cfg); err != nil {
 		log.Fatal(err)
 	}
+
+	go func(srv *server.Server) {
+		if err := srv.Serve(ctx); err != nil {
+			log.Fatal(err)
+		}
+	}(srv)
+
+	log.Println("SERVER STARTED", time.Now())
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)

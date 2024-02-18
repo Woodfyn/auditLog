@@ -6,8 +6,10 @@ services:
     ports:
       - 9000:9000
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+      - amqp
+    networks:
+        - app_log
 
   db:
     restart: always
@@ -18,12 +20,31 @@ services:
       - 27017:27017
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
-      interval: 10s
-      timeout: 5s
+      interval: 1m
+      timeout: 2m
       retries: 3
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: qwerty
+    networks:
+        - app_log
       
+  amqp:
+    image: rabbitmq:latest
+    hostname: localhost
+    ports:
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - app_log
+        
+networks:
+  app_log:
+    name: note_network
+    driver: bridge
+
 volumes:
-  mongodb_data:
+  mongodb_data: # Определение тома
+    name: mongodb_data # Дайте тому имя
